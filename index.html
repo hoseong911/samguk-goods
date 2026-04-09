@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>삼국시대 문화유산 굿즈 온라인 기획전</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background-color: #f5f4f0;
+    color: #1a1a1a;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #fff;
+    border-bottom: 1px solid #e0ddd5;
+    padding: 28px 40px 20px;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+  }
+
+  header p { font-size: 13px; color: #888; }
+
+  .filters {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 40px;
+    background: #fff;
+    border-bottom: 1px solid #e0ddd5;
+    flex-wrap: wrap;
+  }
+
+  .filters select {
+    padding: 8px 30px 8px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fafaf8;
+    color: #333;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+
+  .filters select:focus { outline: none; border-color: #8c6a3f; }
+
+  .result-count { padding: 14px 40px 0; font-size: 13px; color: #888; }
+
+  #galleryArea {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+    padding: 16px 40px 40px;
+  }
+
+  .goods-card {
+    background: #fff;
+    border: 1px solid #e8e5de;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+
+  .goods-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    border-color: #c8b89a;
+  }
+
+  .goods-img-placeholder {
+    width: 100%;
+    height: 160px;
+    background: #f0ede6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #bbb;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+
+  .goods-img-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .goods-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: #1a1a1a; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag { font-size: 12px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+  .tag.nation  { background: #fbe9e7; color: #b03a2e; }
+  .tag.culture { background: #e8f4fd; color: #1a5276; }
+  .tag.usage   { background: #eafaf1; color: #1e8449; }
+
+  .empty-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #aaa;
+    padding: 60px 0;
+    font-size: 15px;
+  }
+
+  .loading-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #aaa;
+    padding: 60px 0;
+    font-size: 15px;
+  }
+
+  /* 모달 */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.52);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal-box {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 580px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalIn 0.22s ease;
+  }
+
+  @keyframes modalIn {
+    from { transform: translateY(16px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    z-index: 10;
+    background: rgba(0,0,0,0.4);
+    border: none;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .modal-close:hover { background: rgba(0,0,0,0.65); }
+
+  .modal-img-area {
+    width: 100%;
+    height: 280px;
+    background: #ece9e1;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .modal-img-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .modal-img-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #bbb;
+    font-size: 13px;
+  }
+
+  .artifact-badge {
+    background: #f0ede6;
+    border-bottom: 1px solid #e4e0d8;
+    padding: 9px 20px;
+    font-size: 12px;
+    color: #7a6a55;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .modal-body { padding: 20px 22px 28px; }
+
+  .modal-name { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #1a1a1a; }
+  .modal-tags { margin-bottom: 18px; }
+  .divider { border: none; border-top: 1px solid #eee; margin: 0 0 18px; }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .info-item { background: #f8f7f4; border-radius: 8px; padding: 12px 14px; }
+  .info-item.full { grid-column: 1 / -1; }
+
+  .info-label {
+    font-size: 11px;
+    color: #999;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .info-value { font-size: 14px; color: #1a1a1a; font-weight: 500; line-height: 1.6; }
+  .info-value.light { font-weight: 400; font-size: 13px; }
+
+  .price-badge {
+    display: inline-block;
+    background: #fbe9e7;
+    color: #b03a2e;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏛️ 삼국시대 문화유산 굿즈 온라인 기획전</h1>
+  <p>카드를 클릭하면 상세 정보를 확인할 수 있습니다</p>
+</header>
+
+<div class="filters">
+  <select id="cultureFilter">
+    <option value="all">문화별 전체</option>
+    <option value="불교">불교</option>
+    <option value="도교">도교</option>
+    <option value="유학">유학</option>
+    <option value="고분">고분</option>
+    <option value="교류사">교류사</option>
+    <option value="기타">기타</option>
+  </select>
+  <select id="nationFilter">
+    <option value="all">국가별 전체</option>
+    <option value="고구려">고구려</option>
+    <option value="백제">백제</option>
+    <option value="신라">신라</option>
+    <option value="가야">가야</option>
+    <option value="기타">기타</option>
+  </select>
+  <select id="usageFilter">
+    <option value="all">용도별 전체</option>
+    <option value="문구/사무">문구/사무</option>
+    <option value="패션/생활용품">패션/생활용품</option>
+    <option value="인테리어 소품">인테리어 소품</option>
+    <option value="주방/식기">주방/식기</option>
+    <option value="디지털/모바일">디지털/모바일</option>
+    <option value="취미/완구">취미/완구</option>
+    <option value="도서">도서</option>
+    <option value="공예품">공예품</option>
+    <option value="기타">기타</option>
+  </select>
+</div>
+
+<div class="result-count" id="resultCount"></div>
+<div id="galleryArea"><p class="loading-msg">데이터를 불러오는 중...</p></div>
+
+<!-- 모달 -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-img-area" id="mImgArea"></div>
+    <div class="artifact-badge" id="mArtifactBadge"></div>
+    <div class="modal-body">
+      <p class="modal-name" id="mName"></p>
+      <div class="tags modal-tags" id="mTags"></div>
+      <hr class="divider">
+      <div class="info-grid">
+        <div class="info-item">
+          <p class="info-label">제작자</p>
+          <p class="info-value" id="mMaker"></p>
+        </div>
+        <div class="info-item">
+          <p class="info-label">가격</p>
+          <p class="info-value"><span class="price-badge" id="mPrice"></span></p>
+        </div>
+        <div class="info-item full">
+          <p class="info-label">굿즈 판매 대상</p>
+          <p class="info-value" id="mTarget"></p>
+        </div>
+        <div class="info-item full">
+          <p class="info-label">굿즈 설명 및 특징</p>
+          <p class="info-value light" id="mDesc"></p>
+        </div>
+        <div class="info-item full">
+          <p class="info-label">굿즈 제작 제안 이유</p>
+          <p class="info-value light" id="mReason"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbx7CSfknCaG9v6HVRLV8xyUh43vWcpPbyenSnXVnUmUBEWE7bCTHUbyRIEtDNVVWPci/exec";
+
+  let goods = [];
+
+  // 구글 시트에서 데이터 불러오기
+  fetch(API_URL)
+    .then(r => r.json())
+    .then(rows => {
+      goods = rows.map(row => ({
+        name:     row["굿즈 이름"]      || "",
+        culture:  row["활용 유물 문화"] || "",
+        nation:   row["활용 유물 국가"] || "",
+        usage:    row["굿즈 용도"]      || "",
+        maker:    (row["학번"] || "") + " " + (row["본인 이름"] || ""),
+        studentId: String(row["학번"]  || "").trim(),
+        price:    row["굿즈 가격"]      || "",
+        artifact: row["활용 유물"]      || "",
+        target:   row["굿즈 판매 대상"] || "",
+        desc:     row["굿즈 설명 및 특징"]   || "",
+        reason:   row["굿즈 제작 제안 이유"] || "",
+      }));
+      filterAndRender();
+    })
+    .catch(() => {
+      document.getElementById("galleryArea").innerHTML =
+        "<p class='empty-msg'>데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</p>";
+    });
+
+  function filterAndRender() {
+    const c = document.getElementById("cultureFilter").value;
+    const n = document.getElementById("nationFilter").value;
+    const u = document.getElementById("usageFilter").value;
+
+    const filtered = goods.filter(item =>
+      (c === "all" || item.culture === c) &&
+      (n === "all" || item.nation === n) &&
+      (u === "all" || item.usage === u)
+    );
+
+    document.getElementById("resultCount").textContent = `총 ${filtered.length}개의 굿즈`;
+
+    const area = document.getElementById("galleryArea");
+    area.innerHTML = "";
+
+    if (filtered.length === 0) {
+      area.innerHTML = "<p class='empty-msg'>조건에 맞는 굿즈가 없습니다.</p>";
+      return;
+    }
+
+    filtered.forEach(item => {
+      const idx = goods.indexOf(item);
+      const imgSrc = `images/${item.studentId}.jpg`;
+
+      const card = document.createElement("div");
+      card.className = "goods-card";
+      card.onclick = () => openModal(idx);
+      card.innerHTML = `
+        <div class="goods-img-placeholder">
+          <img src="${imgSrc}" alt="${item.name}"
+            onerror="this.parentElement.innerHTML='이미지 준비중'">
+        </div>
+        <h3 class="goods-title">${item.name}</h3>
+        <div class="tags">
+          <span class="tag nation">${item.nation}</span>
+          <span class="tag culture">${item.culture}</span>
+          <span class="tag usage">${item.usage}</span>
+        </div>
+      `;
+      area.appendChild(card);
+    });
+  }
+
+  function openModal(idx) {
+    const d = goods[idx];
+    const imgSrc = `images/${d.studentId}.jpg`;
+
+    const imgArea = document.getElementById("mImgArea");
+    imgArea.innerHTML = `<img src="${imgSrc}" alt="${d.artifact}"
+      onerror="this.parentElement.innerHTML='<div class=modal-img-fallback>이미지 준비중</div>'">`;
+
+    document.getElementById("mArtifactBadge").textContent = "📜 " + d.artifact;
+    document.getElementById("mName").textContent = d.name;
+    document.getElementById("mTags").innerHTML = `
+      <span class="tag nation">${d.nation}</span>
+      <span class="tag culture">${d.culture}</span>
+      <span class="tag usage">${d.usage}</span>`;
+    document.getElementById("mMaker").textContent = d.maker;
+    document.getElementById("mPrice").textContent = d.price;
+    document.getElementById("mTarget").textContent = d.target;
+    document.getElementById("mDesc").textContent = d.desc;
+    document.getElementById("mReason").textContent = d.reason;
+
+    document.getElementById("modalOverlay").classList.add("open");
+    document.querySelector(".modal-box").scrollTop = 0;
+  }
+
+  function closeModal() {
+    document.getElementById("modalOverlay").classList.remove("open");
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById("modalOverlay")) closeModal();
+  }
+
+  ["cultureFilter","nationFilter","usageFilter"].forEach(id =>
+    document.getElementById(id).addEventListener("change", filterAndRender)
+  );
+</script>
+</body>
+</html>
