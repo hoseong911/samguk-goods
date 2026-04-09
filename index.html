@@ -4,94 +4,120 @@
 <meta charset="UTF-8">
 <title>IDY 삼국시대 문화유산 굿즈 온라인 기획전</title>
 <style>
+  /* 트렌디한 기본 폰트(Pretendard) 적용 */
+  @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
-    background-color: #f5f4f0;
-    color: #1a1a1a;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    background-color: #f8f9fa; /* 더 깔끔하고 밝은 배경 */
+    color: #212529;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
   }
 
   header {
-    background: #fff;
-    border-bottom: 1px solid #e0ddd5;
-    padding: 28px 40px 20px;
+    background: #ffffff;
+    padding: 40px 20px 24px;
     text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
   }
 
   header h1 {
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: #1a1a1a;
-    margin-bottom: 4px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #1a1b1e;
+    margin-bottom: 8px;
   }
 
-  header p { font-size: 13px; color: #888; }
+  header p { font-size: 15px; color: #868e96; font-weight: 500; }
 
   .filters {
     display: flex;
     justify-content: center;
     gap: 10px;
     padding: 20px 40px;
-    background: #fff;
-    border-bottom: 1px solid #e0ddd5;
+    background: #ffffff;
     flex-wrap: wrap;
+    border-bottom: 1px solid #f1f3f5;
   }
 
   .filters select {
-    padding: 8px 30px 8px 14px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    padding: 10px 36px 10px 16px;
+    border: 1px solid #e9ecef;
+    border-radius: 30px; /* 둥근 알약 모양으로 변경 */
     font-size: 14px;
     font-family: inherit;
-    background: #fafaf8;
-    color: #333;
+    font-weight: 600;
+    background: #f8f9fa;
+    color: #495057;
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23adb5bd' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 10px center;
+    background-position: right 14px center;
+    transition: all 0.2s ease;
   }
 
-  .filters select:focus { outline: none; border-color: #8c6a3f; }
+  .filters select:hover { background: #f1f3f5; }
+  .filters select:focus { outline: none; border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.15); background: #fff; }
 
-  .result-count { padding: 14px 40px 0; font-size: 13px; color: #888; }
+  /* 초기화 버튼 디자인 개선 */
+  .filters button {
+    background: #fff !important;
+    border: 1px solid #e9ecef !important;
+    border-radius: 50% !important; /* 동그랗게 변경 */
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    color: #868e96 !important;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  }
+  .filters button:hover { background: #f8f9fa !important; color: #495057 !important; transform: rotate(-15deg); }
+
+  .result-count { padding: 24px 40px 8px; font-size: 14px; color: #868e96; font-weight: 500; }
 
   #galleryArea {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 18px;
-    padding: 16px 40px 40px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+    padding: 16px 40px 60px;
   }
 
+  /* 카드 디자인 개선 */
   .goods-card {
-    background: #fff;
-    border: 1px solid #e8e5de;
-    border-radius: 12px;
-    padding: 16px;
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.03); /* 선을 거의 안 보이게 처리 */
+    border-radius: 20px;
+    padding: 20px;
     cursor: pointer;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03); /* 부드러운 그림자 */
+    transition: transform 0.25s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.25s ease;
   }
 
   .goods-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    border-color: #c8b89a;
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08);
   }
 
   .goods-img-placeholder {
     width: 100%;
-    height: 160px;
-    background: #fff;
-    border-radius: 8px;
+    aspect-ratio: 1 / 1; /* 정사각형 비율 유지로 트렌디함 강조 */
+    height: auto;
+    background: #f8f9fa;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 13px;
-    color: #bbb;
-    margin-bottom: 14px;
+    color: #adb5bd;
+    margin-bottom: 16px;
     overflow: hidden;
   }
 
@@ -99,40 +125,43 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    border-radius: 8px;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+  }
+  
+  .goods-card:hover .goods-img-placeholder img {
+    transform: scale(1.03); /* 호버시 이미지 살짝 확대 */
   }
 
-  .goods-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: #1a1a1a; }
+  .goods-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #212529; letter-spacing: -0.01em; }
 
-  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
-  .tag { font-size: 12px; padding: 3px 9px; border-radius: 20px; font-weight: 500; cursor: pointer; }
-  .tag:hover { opacity: 0.75; }
-  .tag.nation  { background: #fbe9e7; color: #b03a2e; }
-  .tag.culture { background: #e8f4fd; color: #1a5276; }
-  .tag.usage   { background: #eafaf1; color: #1e8449; }
+  /* 태그 디자인 개선 */
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font-size: 12px; padding: 5px 12px; border-radius: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  .tag.clickable { cursor: pointer; transition: transform 0.1s; }
+  .tag.clickable:active { transform: scale(0.95); }
+  .tag.clickable:hover { opacity: 0.85; }
+  .tag.nation  { background: #fff0f6; color: #c2255c; }
+  .tag.culture { background: #e7f5ff; color: #1c7ed6; }
+  .tag.usage   { background: #ebfbee; color: #2b8a3e; }
 
-  .empty-msg {
+  .empty-msg, .loading-msg {
     grid-column: 1 / -1;
     text-align: center;
-    color: #aaa;
-    padding: 60px 0;
-    font-size: 15px;
+    color: #868e96;
+    padding: 80px 0;
+    font-size: 16px;
+    font-weight: 500;
   }
 
-  .loading-msg {
-    grid-column: 1 / -1;
-    text-align: center;
-    color: #aaa;
-    padding: 60px 0;
-    font-size: 15px;
-  }
-
-  /* 모달 */
+  /* 모달 효과 개선 (Glassmorphism) */
   .modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.52);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px); /* 뒷배경 블러 처리 */
+    -webkit-backdrop-filter: blur(6px);
     z-index: 100;
     align-items: center;
     justify-content: center;
@@ -142,53 +171,58 @@
   .modal-overlay.open { display: flex; }
 
   .modal-box {
-    background: #fff;
-    border-radius: 16px;
+    background: #ffffff;
+    border-radius: 24px;
     width: 100%;
-    max-width: 580px;
+    max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
-    animation: modalIn 0.22s ease;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    animation: modalIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 통통 튀는 애니메이션 */
   }
 
   @keyframes modalIn {
-    from { transform: translateY(16px); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
+    from { transform: translateY(30px) scale(0.95); opacity: 0; }
+    to   { transform: translateY(0) scale(1); opacity: 1; }
   }
 
   .modal-close {
     position: absolute;
-    top: 14px; right: 14px;
+    top: 16px; right: 16px;
     z-index: 10;
-    background: rgba(0,0,0,0.4);
+    background: rgba(255,255,255,0.9);
     border: none;
-    width: 34px; height: 34px;
+    width: 36px; height: 36px;
     border-radius: 50%;
     font-size: 16px;
     cursor: pointer;
-    color: #fff;
+    color: #495057;
     display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.2s;
   }
 
-  .modal-close:hover { background: rgba(0,0,0,0.65); }
+  .modal-close:hover { background: #fff; transform: scale(1.1); }
 
   .modal-img-area {
     width: 100%;
-    max-height: 420px;
-    background: #fff;
-    border-radius: 16px 16px 0 0;
+    max-height: 400px;
+    background: #f8f9fa;
+    border-radius: 24px 24px 0 0;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    padding: 20px;
   }
 
   .modal-img-area img {
     width: 100%;
-    max-height: 420px;
+    max-height: 360px;
     object-fit: contain;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05)); /* 이미지에 입체감 부여 */
   }
 
   .modal-img-fallback {
@@ -196,50 +230,51 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    color: #bbb;
-    font-size: 13px;
+    color: #adb5bd;
+    font-size: 14px;
+    font-weight: 500;
   }
 
   .artifact-badge {
-    background: #f0ede6;
-    border-bottom: 1px solid #e4e0d8;
-    padding: 9px 20px;
-    font-size: 12px;
-    color: #7a6a55;
+    background: #f8f9fa;
+    border-bottom: 1px solid #f1f3f5;
+    padding: 12px 24px;
+    font-size: 13px;
+    color: #495057;
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 6px;
   }
 
-  .modal-body { padding: 20px 22px 28px; }
+  .modal-body { padding: 24px 28px 36px; }
 
-  .modal-name { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #1a1a1a; }
-  .modal-tags { margin-bottom: 18px; }
-  .divider { border: none; border-top: 1px solid #eee; margin: 0 0 18px; }
+  .modal-name { font-size: 24px; font-weight: 800; margin-bottom: 12px; color: #1a1b1e; letter-spacing: -0.02em; }
+  .modal-tags { margin-bottom: 24px; }
+  .divider { border: none; border-top: 1px solid #f1f3f5; margin: 0 0 24px; }
 
-  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .info-item { background: #f8f7f4; border-radius: 8px; padding: 12px 14px; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .info-item { background: #f8f9fa; border-radius: 16px; padding: 16px 20px; }
   .info-item.full { grid-column: 1 / -1; }
 
   .info-label {
-    font-size: 11px;
-    color: #999;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-    margin-bottom: 5px;
+    font-size: 12px;
+    color: #adb5bd;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
   }
 
-  .info-value { font-size: 14px; color: #1a1a1a; font-weight: 500; line-height: 1.6; }
-  .info-value.light { font-weight: 400; font-size: 13px; }
+  .info-value { font-size: 15px; color: #343a40; font-weight: 600; line-height: 1.6; }
+  .info-value.light { font-weight: 500; font-size: 15px; color: #495057; }
 
   .price-badge {
     display: inline-block;
-    background: #fbe9e7;
-    color: #b03a2e;
-    padding: 4px 10px;
+    background: #212529;
+    color: #fff;
+    padding: 6px 14px;
     border-radius: 20px;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
   }
 </style>
@@ -248,195 +283,3 @@
 
 <header>
   <h1>🏛️ IDY 삼국시대 문화유산 굿즈 온라인 기획전</h1>
-  <p>카드를 클릭하면 상세 정보를 확인할 수 있습니다</p>
-</header>
-
-<div class="filters">
-  <select id="cultureFilter">
-    <option value="all">문화별 전체</option>
-    <option value="불교">불교</option>
-    <option value="도교">도교</option>
-    <option value="유학">유학</option>
-    <option value="고분">고분</option>
-    <option value="교류사">교류사</option>
-    <option value="기타">기타</option>
-  </select>
-  <select id="nationFilter">
-    <option value="all">국가별 전체</option>
-    <option value="고구려">고구려</option>
-    <option value="백제">백제</option>
-    <option value="신라">신라</option>
-    <option value="가야">가야</option>
-    <option value="기타">기타</option>
-  </select>
-  <select id="usageFilter">
-    <option value="all">용도별 전체</option>
-    <option value="문구/사무">문구/사무</option>
-    <option value="패션/생활용품">패션/생활용품</option>
-    <option value="인테리어 소품">인테리어 소품</option>
-    <option value="주방/식기">주방/식기</option>
-    <option value="디지털/모바일">디지털/모바일</option>
-    <option value="취미/완구">취미/완구</option>
-    <option value="도서">도서</option>
-    <option value="공예품">공예품</option>
-    <option value="기타">기타</option>
-  </select>
-</div>
-
-<div class="result-count" id="resultCount"></div>
-<div id="galleryArea"><p class="loading-msg">데이터를 불러오는 중...</p></div>
-
-<!-- 모달 -->
-<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-img-area" id="mImgArea"></div>
-    <div class="artifact-badge" id="mArtifactBadge"></div>
-    <div class="modal-body">
-      <p class="modal-name" id="mName"></p>
-      <div class="tags modal-tags" id="mTags"></div>
-      <hr class="divider">
-      <div class="info-grid">
-        <div class="info-item">
-          <p class="info-label">제작자</p>
-          <p class="info-value" id="mMaker"></p>
-        </div>
-        <div class="info-item">
-          <p class="info-label">가격</p>
-          <p class="info-value"><span class="price-badge" id="mPrice"></span></p>
-        </div>
-        <div class="info-item full">
-          <p class="info-label">굿즈 판매 대상</p>
-          <p class="info-value" id="mTarget"></p>
-        </div>
-        <div class="info-item full">
-          <p class="info-label">굿즈 설명 및 특징</p>
-          <p class="info-value light" id="mDesc"></p>
-        </div>
-        <div class="info-item full">
-          <p class="info-label">굿즈 제작 제안 이유</p>
-          <p class="info-value light" id="mReason"></p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbx7CSfknCaG9v6HVRLV8xyUh43vWcpPbyenSnXVnUmUBEWE7bCTHUbyRIEtDNVVWPci/exec";
-
-  let goods = [];
-
-  // 구글 시트에서 데이터 불러오기
-  fetch(API_URL)
-    .then(r => r.json())
-    .then(rows => {
-      goods = rows.map(row => ({
-        name:     row["굿즈 이름"]      || "",
-        culture:  row["활용 유물 문화"] || "",
-        nation:   row["활용 유물 국가"] || "",
-        usage:    row["굿즈 용도"]      || "",
-        maker:    (row["학번"] || "") + " " + (row["본인 이름"] || ""),
-        studentId: String(row["학번"]  || "").trim(),
-        price:    row["굿즈 가격"]      || "",
-        artifact: row["활용 유물"]      || "",
-        target:   row["굿즈 판매 대상"] || "",
-        desc:     row["굿즈 설명 및 특징"]   || "",
-        reason:   row["굿즈 제작 제안 이유"] || "",
-      }));
-      filterAndRender();
-    })
-    .catch(() => {
-      document.getElementById("galleryArea").innerHTML =
-        "<p class='empty-msg'>데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</p>";
-    });
-
-  function filterAndRender() {
-    const c = document.getElementById("cultureFilter").value;
-    const n = document.getElementById("nationFilter").value;
-    const u = document.getElementById("usageFilter").value;
-
-    const filtered = goods.filter(item =>
-      (c === "all" || item.culture === c) &&
-      (n === "all" || item.nation === n) &&
-      (u === "all" || item.usage === u)
-    );
-
-    document.getElementById("resultCount").textContent = `총 ${filtered.length}개의 굿즈`;
-
-    const area = document.getElementById("galleryArea");
-    area.innerHTML = "";
-
-    if (filtered.length === 0) {
-      area.innerHTML = "<p class='empty-msg'>조건에 맞는 굿즈가 없습니다.</p>";
-      return;
-    }
-
-    filtered.forEach(item => {
-      const idx = goods.indexOf(item);
-      const imgSrc = `images/${item.studentId}.jpg`;
-
-      const card = document.createElement("div");
-      card.className = "goods-card";
-      card.onclick = () => openModal(idx);
-      card.innerHTML = `
-        <div class="goods-img-placeholder">
-          <img src="${imgSrc}" alt="${item.name}"
-            onerror="this.parentElement.innerHTML='이미지 준비중'">
-        </div>
-        <h3 class="goods-title">${item.name}</h3>
-        <div class="tags">
-          <span class="tag nation" onclick="applyFilter('nationFilter','${item.nation}',event)">${item.nation}</span>
-          <span class="tag culture" onclick="applyFilter('cultureFilter','${item.culture}',event)">${item.culture}</span>
-          <span class="tag usage" onclick="applyFilter('usageFilter','${item.usage}',event)">${item.usage}</span>
-        </div>
-      `;
-      area.appendChild(card);
-    });
-  }
-
-  function openModal(idx) {
-    const d = goods[idx];
-    const imgSrc = `images/${d.studentId}.jpg`;
-
-    const imgArea = document.getElementById("mImgArea");
-    imgArea.innerHTML = `<img src="${imgSrc}" alt="${d.artifact}"
-      onerror="this.parentElement.innerHTML='<div class=modal-img-fallback>이미지 준비중</div>'">`;
-
-    document.getElementById("mArtifactBadge").textContent = "📜 " + d.artifact;
-    document.getElementById("mName").textContent = d.name;
-    document.getElementById("mTags").innerHTML = `
-      <span class="tag nation">${d.nation}</span>
-      <span class="tag culture">${d.culture}</span>
-      <span class="tag usage">${d.usage}</span>`;
-    document.getElementById("mMaker").textContent = d.maker;
-    document.getElementById("mPrice").textContent = d.price;
-    document.getElementById("mTarget").textContent = d.target;
-    document.getElementById("mDesc").textContent = d.desc;
-    document.getElementById("mReason").textContent = d.reason;
-
-    document.getElementById("modalOverlay").classList.add("open");
-    document.querySelector(".modal-box").scrollTop = 0;
-  }
-
-  function applyFilter(filterId, value, event) {
-    event.stopPropagation();
-    document.getElementById(filterId).value = value;
-    filterAndRender();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  function closeModal() {
-    document.getElementById("modalOverlay").classList.remove("open");
-  }
-
-  function handleOverlayClick(e) {
-    if (e.target === document.getElementById("modalOverlay")) closeModal();
-  }
-
-  ["cultureFilter","nationFilter","usageFilter"].forEach(id =>
-    document.getElementById(id).addEventListener("change", filterAndRender)
-  );
-</script>
-</body>
-</html>
