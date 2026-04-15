@@ -44,6 +44,25 @@
     border-bottom: 1px solid #f1f3f5;
   }
 
+  @media (max-width: 599px) {
+    .filters {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      justify-content: flex-start;
+      padding: 14px 16px;
+      gap: 8px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .filters::-webkit-scrollbar { display: none; }
+    .filters select {
+      flex-shrink: 0;
+      font-size: 13px;
+      padding: 8px 28px 8px 12px;
+    }
+    .filters button { flex-shrink: 0; }
+  }
+
   .filters select {
     padding: 10px 36px 10px 16px;
     border: 1px solid #e9ecef;
@@ -423,6 +442,14 @@
         desc:      row["굿즈 설명 및 특징"]    || "",
         reason:    row["굿즈 제작 제안 이유"]  || "",
       }));
+
+      // URL 파라미터로 필터 복원
+      const p = getParams();
+      document.getElementById("cultureFilter").value = p.c;
+      document.getElementById("nationFilter").value  = p.n;
+      document.getElementById("usageFilter").value   = p.u;
+      document.getElementById("classFilter").value   = p.cl;
+
       filterAndRender();
     })
     .catch(() => {
@@ -430,11 +457,39 @@
         "<p class='empty-msg'>데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</p>";
     });
 
+  function getParams() {
+    const p = new URLSearchParams(window.location.search);
+    return {
+      c:  p.get("culture") || "all",
+      n:  p.get("nation")  || "all",
+      u:  p.get("usage")   || "all",
+      cl: p.get("class")   || "all",
+    };
+  }
+
+  function saveParams() {
+    const p = new URLSearchParams();
+    const c  = document.getElementById("cultureFilter").value;
+    const n  = document.getElementById("nationFilter").value;
+    const u  = document.getElementById("usageFilter").value;
+    const cl = document.getElementById("classFilter").value;
+    if (c  !== "all") p.set("culture", c);
+    if (n  !== "all") p.set("nation",  n);
+    if (u  !== "all") p.set("usage",   u);
+    if (cl !== "all") p.set("class",   cl);
+    const newUrl = p.toString()
+      ? `${location.pathname}?${p.toString()}`
+      : location.pathname;
+    history.replaceState(null, "", newUrl);
+  }
+
   function filterAndRender() {
     const c  = document.getElementById("cultureFilter").value;
     const n  = document.getElementById("nationFilter").value;
     const u  = document.getElementById("usageFilter").value;
     const cl = document.getElementById("classFilter").value;
+
+    saveParams();
 
     const filtered = goods.filter(item =>
       (c  === "all" || item.culture   === c)  &&
