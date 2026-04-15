@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IDY 삼국시대 문화유산 굿즈 온라인 기획전</title>
 <style>
   @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
@@ -61,17 +62,14 @@
   }
 
   .filters select:hover { background: #f1f3f5; }
-  .filters select:focus { outline: none; border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.15); background: #fff; }
+  .filters select:focus { outline: none; border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77,171,247,0.15); background: #fff; }
 
   .filters button {
     background: #fff !important;
     border: 1px solid #e9ecef !important;
     border-radius: 50% !important;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
     padding: 0 !important;
     color: #868e96 !important;
     transition: all 0.2s ease;
@@ -95,7 +93,7 @@
     padding: 20px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-    transition: transform 0.25s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.25s ease;
+    transition: transform 0.25s cubic-bezier(0.075,0.82,0.165,1), box-shadow 0.25s ease;
   }
 
   .goods-card:hover {
@@ -106,8 +104,7 @@
   .goods-img-placeholder {
     width: 100%;
     aspect-ratio: 1 / 1;
-    height: auto;
-    background: transparent; /* ✅ 수정: 회색 배경 제거 */
+    background: transparent;
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -126,9 +123,7 @@
     transition: transform 0.3s ease;
   }
 
-  .goods-card:hover .goods-img-placeholder img {
-    transform: scale(1.03);
-  }
+  .goods-card:hover .goods-img-placeholder img { transform: scale(1.03); }
 
   .goods-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #212529; letter-spacing: -0.01em; }
 
@@ -150,36 +145,55 @@
     font-weight: 500;
   }
 
+  /* ── 모달 ── */
   .modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background: rgba(0,0,0,0.5);
     z-index: 100;
-    align-items: center;
+    align-items: flex-end;       /* 모바일: 하단에서 올라옴 */
     justify-content: center;
-    padding: 20px;
+    padding: 0;
+  }
+
+  /* 데스크탑: 가운데 정렬 */
+  @media (min-width: 600px) {
+    .modal-overlay {
+      align-items: center;
+      padding: 20px;
+    }
+    .modal-box {
+      border-radius: 24px !important;
+      max-height: 90vh !important;
+    }
   }
 
   .modal-overlay.open { display: flex; }
 
   .modal-box {
     background: #ffffff;
-    border-radius: 24px;
+    border-radius: 24px 24px 0 0;  /* 모바일: 위쪽만 둥글게 */
     width: 100%;
     max-width: 600px;
-    max-height: 90vh;
+    max-height: 92vh;
     overflow-y: auto;
     position: relative;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-    animation: modalIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.15);
+    animation: modalUp 0.35s cubic-bezier(0.175,0.885,0.32,1.1);
   }
 
-  @keyframes modalIn {
-    from { transform: translateY(30px) scale(0.95); opacity: 0; }
-    to   { transform: translateY(0) scale(1); opacity: 1; }
+  @keyframes modalUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  @media (min-width: 600px) {
+    .modal-box { animation: modalIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+    @keyframes modalIn {
+      from { transform: translateY(30px) scale(0.95); opacity: 0; }
+      to   { transform: translateY(0) scale(1); opacity: 1; }
+    }
   }
 
   .modal-close {
@@ -200,24 +214,36 @@
 
   .modal-close:hover { background: #fff; transform: scale(1.1); }
 
+  /* 이미지 영역 — 모바일 꽉 채우기 */
   .modal-img-area {
     width: 100%;
-    max-height: 400px;
-    background: transparent; /* ✅ 수정: 회색 배경 제거 */
+    background: #f8f9fa;
     border-radius: 24px 24px 0 0;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    padding: 20px;
+    padding: 0;                  /* padding 제거 */
+    min-height: 280px;
   }
 
   .modal-img-area img {
     width: 100%;
-    max-height: 360px;
+    max-height: 60vw;            /* 모바일: 화면 너비의 60% */
     object-fit: contain;
-    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));
+    display: block;
+  }
+
+  /* 데스크탑: 이미지 크기 제한 */
+  @media (min-width: 600px) {
+    .modal-img-area {
+      padding: 16px;
+      min-height: 320px;
+    }
+    .modal-img-area img {
+      max-height: 400px;
+    }
   }
 
   .modal-img-fallback {
@@ -228,6 +254,7 @@
     color: #adb5bd;
     font-size: 14px;
     font-weight: 500;
+    padding: 40px;
   }
 
   .artifact-badge {
@@ -242,26 +269,27 @@
     gap: 6px;
   }
 
-  .modal-body { padding: 24px 28px 36px; }
+  .modal-body { padding: 24px 24px 40px; }
 
-  .modal-name { font-size: 24px; font-weight: 800; margin-bottom: 12px; color: #1a1b1e; letter-spacing: -0.02em; }
+  .modal-name { font-size: 22px; font-weight: 800; margin-bottom: 12px; color: #1a1b1e; letter-spacing: -0.02em; }
   .modal-tags { margin-bottom: 24px; }
-  .divider { border: none; border-top: 1px solid #f1f3f5; margin: 0 0 24px; }
+  .divider { border: none; border-top: 1px solid #f1f3f5; margin: 0 0 20px; }
 
-  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .info-item { background: #f8f9fa; border-radius: 16px; padding: 16px 20px; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .info-item { background: #f8f9fa; border-radius: 16px; padding: 14px 18px; }
   .info-item.full { grid-column: 1 / -1; }
 
   .info-label {
-    font-size: 12px;
+    font-size: 11px;
     color: #adb5bd;
     font-weight: 700;
     letter-spacing: 0.05em;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
   }
 
   .info-value { font-size: 15px; color: #343a40; font-weight: 600; line-height: 1.6; }
-  .info-value.light { font-weight: 500; font-size: 15px; color: #495057; }
+  .info-value.light { font-weight: 500; font-size: 14px; color: #495057; }
 
   .price-badge {
     display: inline-block;
@@ -320,13 +348,12 @@
     <option value="305">5반</option>
     <option value="306">6반</option>
   </select>
-  <button onclick="resetFilters()" title="필터 초기화" style="background:none; border:1px solid #ddd; border-radius:6px; padding:8px 12px; cursor:pointer; font-size:16px; color:#888; line-height:1;">↺</button>
+  <button onclick="resetFilters()" title="필터 초기화">↺</button>
 </div>
 
 <div class="result-count" id="resultCount"></div>
 <div id="galleryArea"><p class="loading-msg">데이터를 불러오는 중...</p></div>
 
-<!-- 모달 -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -417,10 +444,9 @@
     filtered.forEach(item => {
       const idx    = goods.indexOf(item);
       const imgSrc = `images/${item.studentId}.jpg`;
-
-      const card = document.createElement("div");
+      const card   = document.createElement("div");
       card.className = "goods-card";
-      card.onclick = () => openModal(idx);
+      card.onclick   = () => openModal(idx);
       card.innerHTML = `
         <div class="goods-img-placeholder">
           <img src="${imgSrc}" alt="${item.name}"
@@ -462,20 +488,16 @@
   }
 
   function resetFilters() {
-    document.getElementById("cultureFilter").value = "all";
-    document.getElementById("nationFilter").value  = "all";
-    document.getElementById("usageFilter").value   = "all";
-    document.getElementById("classFilter").value   = "all";
+    ["cultureFilter","nationFilter","usageFilter","classFilter"]
+      .forEach(id => document.getElementById(id).value = "all");
     filterAndRender();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function applyFilterFromModal(filterId, value) {
     closeModal();
-    document.getElementById("cultureFilter").value = "all";
-    document.getElementById("nationFilter").value  = "all";
-    document.getElementById("usageFilter").value   = "all";
-    document.getElementById("classFilter").value   = "all";
+    ["cultureFilter","nationFilter","usageFilter","classFilter"]
+      .forEach(id => document.getElementById(id).value = "all");
     document.getElementById(filterId).value = value;
     filterAndRender();
     window.scrollTo({ top: 0, behavior: "smooth" });
